@@ -9,8 +9,14 @@ class BaseProperties {
 
     @ConfigurationProperties(prefix = "property.pub-sub")
     @ConfigurationPropertiesBinding
-    class PubSub {
+    data class PubSub (
         var topicName: String = ""
-    }
+    )
 
+    @ConfigurationProperties(prefix = "property.lock-registry")
+    @ConfigurationPropertiesBinding
+    data class LockRegistry (
+        var key: String = "",
+        var lockExpireSeconds: Long = 5
+    )
 }

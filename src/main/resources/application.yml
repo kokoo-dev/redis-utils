@@ -10,3 +10,6 @@ spring:
 property:
   pub-sub:
     topic-name: sample
+  lock-registry:
+    key: lock-registry
+    lock-expire-seconds: 3
