@@ -1,7 +1,7 @@
-package com.kokoo.redisutils.event
+package com.kokoo.redisutils.pubsub.event
 
 import com.kokoo.redisutils.config.BaseProperties
-import com.kokoo.redisutils.dto.PubSubDto
+import com.kokoo.redisutils.pubsub.dto.PubSubDto
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Component
 

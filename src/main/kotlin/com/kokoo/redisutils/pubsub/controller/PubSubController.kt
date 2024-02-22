@@ -1,7 +1,7 @@
-package com.kokoo.redisutils.controller
+package com.kokoo.redisutils.pubsub.controller
 
-import com.kokoo.redisutils.dto.PubSubDto
-import com.kokoo.redisutils.event.Publisher
+import com.kokoo.redisutils.pubsub.dto.PubSubDto
+import com.kokoo.redisutils.pubsub.event.Publisher
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping

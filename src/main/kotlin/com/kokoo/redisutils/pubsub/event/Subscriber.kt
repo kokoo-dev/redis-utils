@@ -1,4 +1,4 @@
-package com.kokoo.redisutils.event
+package com.kokoo.redisutils.pubsub.event
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.redis.connection.Message
