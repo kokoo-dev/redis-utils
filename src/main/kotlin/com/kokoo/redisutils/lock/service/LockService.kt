@@ -1,4 +1,4 @@
-package com.kokoo.redisutils.lock
+package com.kokoo.redisutils.lock.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.redis.core.RedisTemplate

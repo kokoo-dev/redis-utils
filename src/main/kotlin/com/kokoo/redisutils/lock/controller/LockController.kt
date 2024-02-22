@@ -1,6 +1,6 @@
 package com.kokoo.redisutils.lock.controller
 
-import com.kokoo.redisutils.lock.LockService
+import com.kokoo.redisutils.lock.service.LockService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
