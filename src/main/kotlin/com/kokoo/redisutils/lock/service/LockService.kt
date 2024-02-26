@@ -5,19 +5,17 @@ import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.integration.support.locks.ExpirableLockRegistry
 import org.springframework.stereotype.Service
 
+
 @Service
 class LockService(
     private val lockRegistry: ExpirableLockRegistry,
-    private val intRedisTemplate: RedisTemplate<String, Int>
+    private val intRedisTemplate: RedisTemplate<String, Int>,
+    private val transactionRedisTemplate: RedisTemplate<String, Int>
 ) {
-
-    companion object {
-        private const val REDIS_KEY = "key"
-    }
 
     private val log = KotlinLogging.logger {}
 
-    fun lock(lockKey: String, counter: Int) {
+    fun lockBySpringIntegration(lockKey: String, counter: Int) {
         val lock = lockRegistry.obtain(lockKey)
         try {
             val unlocked = lock.tryLock()
@@ -26,13 +24,10 @@ class LockService(
                 lock.lockInterruptibly()
             }
 
-            val number = intRedisTemplate.opsForValue().get(REDIS_KEY) ?: 0
-            intRedisTemplate.opsForValue().increment(REDIS_KEY)
+            val number = intRedisTemplate.opsForValue().get(lockKey) ?: 0
+            intRedisTemplate.opsForValue().increment(lockKey)
 
-            val random = (10..300).random()
-            Thread.sleep(random.toLong())
-
-            val increasedNumber = intRedisTemplate.opsForValue().get(REDIS_KEY)
+            val increasedNumber = intRedisTemplate.opsForValue().get(lockKey)
 
             if (number.plus(1) != increasedNumber) {
                 // lock failed..
@@ -42,6 +37,28 @@ class LockService(
             log.error { e }
         } finally {
             lock.unlock()
+        }
+    }
+
+    fun lockByMultiExec(lockKey: String, counter: Int) {
+        // cluster 에서 사용 불가
+        transactionRedisTemplate.execute {
+            try {
+                it.watch(lockKey.toByteArray())
+                it.multi()
+
+                val number = it.stringCommands().get(lockKey.toByteArray())?.toString(Charsets.UTF_8) ?: ""
+
+                it.stringCommands().incr(lockKey.toByteArray())
+
+                // exec() 전 원하는 get 불가
+                val increasedNumber = it.stringCommands().get(lockKey.toByteArray())?.toString(Charsets.UTF_8) ?: ""
+            } catch (e: Exception) {
+                log.error { e }
+                it.discard()
+            }
+
+            it.exec()
         }
     }
 }

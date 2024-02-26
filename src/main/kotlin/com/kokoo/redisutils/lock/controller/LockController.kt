@@ -12,9 +12,15 @@ class LockController(
     private val lockService: LockService
 ) {
 
-    @GetMapping("")
-    fun lock(@RequestParam(value = "lockKey") lockKey: String,
+    @GetMapping("/spring-integration")
+    fun lockBySpringIntegration(@RequestParam(value = "lockKey") lockKey: String,
              @RequestParam(value = "counter") counter: Int) {
-        lockService.lock(lockKey, counter)
+        lockService.lockBySpringIntegration(lockKey, counter)
+    }
+
+    @GetMapping("/multi-exec")
+    fun lockByMultiExec(@RequestParam(value = "lockKey") lockKey: String,
+                                @RequestParam(value = "counter") counter: Int) {
+        lockService.lockByMultiExec(lockKey, counter)
     }
 }

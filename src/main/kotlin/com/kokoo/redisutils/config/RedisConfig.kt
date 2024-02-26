@@ -50,6 +50,17 @@ class RedisConfig(
     }
 
     @Bean
+    fun transactionRedisTemplate(): RedisTemplate<String, Int> {
+        val redisTemplate = RedisTemplate<String, Int>()
+        redisTemplate.connectionFactory = redisConnectionFactory()
+        redisTemplate.keySerializer = StringRedisSerializer()
+        redisTemplate.valueSerializer = GenericJackson2JsonRedisSerializer()
+        redisTemplate.setEnableTransactionSupport(true)
+
+        return redisTemplate
+    }
+
+    @Bean
     fun redisListenerContainer(
         redisConnectionFactory: RedisConnectionFactory,
         subscriber: Subscriber
