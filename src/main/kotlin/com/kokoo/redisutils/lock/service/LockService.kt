@@ -2,6 +2,8 @@ package com.kokoo.redisutils.lock.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.StringRedisTemplate
+import org.springframework.data.redis.core.script.RedisScript
 import org.springframework.integration.support.locks.ExpirableLockRegistry
 import org.springframework.stereotype.Service
 
@@ -10,7 +12,10 @@ import org.springframework.stereotype.Service
 class LockService(
     private val lockRegistry: ExpirableLockRegistry,
     private val intRedisTemplate: RedisTemplate<String, Int>,
-    private val transactionRedisTemplate: RedisTemplate<String, Int>
+    private val transactionRedisTemplate: RedisTemplate<String, Int>,
+
+    private val redisTemplate: StringRedisTemplate,
+    private val decrementRedisScript: RedisScript<Boolean>
 ) {
 
     private val log = KotlinLogging.logger {}
@@ -60,5 +65,10 @@ class LockService(
 
             it.exec()
         }
+    }
+
+    fun lockByLuaScript(lockKey: String) {
+        val result = redisTemplate.execute(decrementRedisScript, listOf(lockKey))
+        log.info { result }
     }
 }

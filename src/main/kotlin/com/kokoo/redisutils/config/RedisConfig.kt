@@ -5,9 +5,11 @@ import com.kokoo.redisutils.pubsub.event.Subscriber
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.io.ClassPathResource
 import org.springframework.data.redis.connection.RedisConnectionFactory
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.script.RedisScript
 import org.springframework.data.redis.listener.ChannelTopic
 import org.springframework.data.redis.listener.RedisMessageListenerContainer
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
@@ -86,5 +88,12 @@ class RedisConfig(
         redisLockRegistry.setRedisLockType(RedisLockRegistry.RedisLockType.PUB_SUB_LOCK)
 
         return redisLockRegistry
+    }
+
+    @Bean
+    fun decrementRedisScript(): RedisScript<Boolean> {
+        val script = ClassPathResource("lua/decrement.lua")
+
+        return RedisScript.of(script, Boolean::class.java)
     }
 }

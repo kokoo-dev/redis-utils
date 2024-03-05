@@ -20,7 +20,12 @@ class LockController(
 
     @GetMapping("/multi-exec")
     fun lockByMultiExec(@RequestParam(value = "lockKey") lockKey: String,
-                                @RequestParam(value = "counter") counter: Int) {
+                        @RequestParam(value = "counter") counter: Int) {
         lockService.lockByMultiExec(lockKey, counter)
+    }
+
+    @GetMapping("/lua-script")
+    fun lockByLuaScript(@RequestParam(value = "lockKey") lockKey: String) {
+        lockService.lockByLuaScript(lockKey)
     }
 }
